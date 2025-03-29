@@ -1,6 +1,13 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "./components/Layout/MainLayout";
+import Login from "./pages/Login/Login";
+import { Navigate } from "react-router-dom";
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuth = localStorage.getItem("auth") === "true";
+  return isAuth ? children : <Navigate to="/login" />;
+};
+
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Devices from "./pages/Devices/Devices";
 import Realtime from "./pages/Realtime/Realtime";
@@ -16,7 +23,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route element={<MainLayout />}>
+        <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/devices" element={<Devices />} />
           <Route path="/realtime" element={<Realtime />} />
@@ -28,7 +35,8 @@ function App() {
           <Route path="/users" element={<Users />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
-      </Routes>
+        <Route path="/login" element={<Login />} />
+</Routes>
     </Router>
   );
 }

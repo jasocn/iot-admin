@@ -1,6 +1,8 @@
 import React from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Home, Server, Activity, History, Settings, AlertTriangle, Upload, FileText, Users } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { UserMenu } from "@/components/UserMenu";
 
 const menuItems = [
   { name: "Dashboard", path: "/", icon: <Home size={18} /> },
@@ -38,6 +40,7 @@ const MainLayout = () => {
       <main className="flex-1 bg-gray-50 overflow-y-auto">
         <div className="p-4 border-b border-gray-200 bg-white shadow">
           <h1 className="text-xl font-semibold">IoT Admin Platform</h1>
+          <div className="ml-auto flex items-center space-x-2"><ThemeToggle /><UserMenu /></div>
         </div>
         <div className="p-4">
           <Outlet />
