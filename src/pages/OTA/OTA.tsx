@@ -30,10 +30,10 @@ const OTA = () => {
   const handlePush = (id: string) => {
     const updated = devices.map((d) =>
       d.id === id
-        ? {
+        ? ({
             ...d,
             status: Math.random() > 0.2 ? "已完成" : "失败", // 模拟成功率
-          }
+          } as DeviceUpgrade)
         : d
     );
     setDevices(updated);

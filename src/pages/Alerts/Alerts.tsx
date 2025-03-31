@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -47,7 +47,7 @@ const Alerts = () => {
   const [alerts, setAlerts] = useState(initialAlerts);
 
   const handleConfirm = (id: number) => {
-    const updated = alerts.map((a) =>
+    const updated = alerts.map((a): AlertItem =>
       a.id === id ? { ...a, status: "已确认" } : a
     );
     setAlerts(updated);

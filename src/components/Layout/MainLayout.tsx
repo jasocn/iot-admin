@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Home, Server, Activity, History, Settings, AlertTriangle, Upload, FileText, Users } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
