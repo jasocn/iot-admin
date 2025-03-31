@@ -6,21 +6,21 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 const mockDevices = [
   {
     id: "iot2050-001",
-    name: "PLC Line A",
+    name: "PLC Filling",
     ip: "192.168.1.10",
     status: "online",
     lastSeen: "2025-03-30 10:32",
   },
   {
     id: "iot2050-002",
-    name: "PLC Line B",
+    name: "PLC Wheel",
     ip: "192.168.1.11",
     status: "offline",
     lastSeen: "2025-03-30 09:48",
   },
   {
     id: "iot2050-003",
-    name: "PLC Boiler",
+    name: "PLC HOP",
     ip: "192.168.1.12",
     status: "online",
     lastSeen: "2025-03-30 10:30",
