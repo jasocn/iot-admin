@@ -26,6 +26,18 @@ const History = () => {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold tracking-tight">历史数据记录</h2>
+      <div className="flex flex-wrap items-center gap-4">
+        <label className="text-sm font-medium">起止时间：</label>
+        <input type="datetime-local" className="border px-2 py-1 rounded text-sm" />
+        <input type="datetime-local" className="border px-2 py-1 rounded text-sm" />
+        <select className="border px-2 py-1 rounded text-sm">
+          <option>全部工位</option>
+          <option>总装一线</option>
+          <option>电池包线</option>
+          <option>门盖线</option>
+        </select>
+        <button className="bg-blue-600 text-white px-3 py-1 rounded text-sm">查询</button>
+      </div>
 
       <Card>
         <CardHeader>

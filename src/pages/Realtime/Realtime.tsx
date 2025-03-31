@@ -57,6 +57,21 @@ const Realtime = () => {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold tracking-tight">实时监控</h2>
+      <div className="flex flex-wrap items-center gap-4">
+        <label className="text-sm font-medium">时间范围：</label>
+        <select className="border px-2 py-1 rounded text-sm">
+          <option>最近 30 分钟</option>
+          <option>最近 1 小时</option>
+          <option>最近 2 小时</option>
+        </select>
+        <select className="border px-2 py-1 rounded text-sm">
+          <option>全部工位</option>
+          <option>总装一线</option>
+          <option>电池包线</option>
+          <option>门盖线</option>
+        </select>
+        <button className="bg-blue-600 text-white px-3 py-1 rounded text-sm">查询</button>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((item, index) => (
