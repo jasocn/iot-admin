@@ -55,7 +55,7 @@ const MainLayout = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Top Bar */}
-        <div className="p-4 border-b border-gray-200 bg-white shadow flex justify-between items-center">
+        <div className="p-4 border-b border-gray-200 bg-white dark:bg-slate-900 shadow flex justify-between items-center">
           <h1 className="text-xl font-semibold">IoT Admin Platform</h1>
           <div className="flex items-center space-x-2">
             <ThemeToggle />
