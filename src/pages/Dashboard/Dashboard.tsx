@@ -62,7 +62,7 @@ const stats = [
 ];
 
 const Dashboard = () => {
-  const [selectedKey, setSelectedKey] = useState("onlineDevices");
+  const [selectedKey, setSelectedKey] = useState<keyof typeof chartData>("onlineDevices");
   const [selectedRange, setSelectedRange] = useState(14);
 
   return (

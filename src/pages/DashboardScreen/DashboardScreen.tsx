@@ -101,7 +101,7 @@ const DashboardScreen = () => {
             <BarChart data={qualityData}>
               <XAxis dataKey="batch" stroke="#ccc" />
               <YAxis stroke="#ccc" domain={[90, 100]} tickFormatter={(v) => `${v}%`} />
-              <Tooltip contentStyle={{ backgroundColor: '#333', color: '#fff' }} formatter={(v) => `${v.toFixed(1)}%`} />
+              <Tooltip contentStyle={{ backgroundColor: '#333', color: '#fff' }} formatter={(v) => (typeof v === 'number' ? `${v.toFixed(1)}%` : `${v}%`)} />
               <Bar dataKey="rate" fill="#4ade80" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
