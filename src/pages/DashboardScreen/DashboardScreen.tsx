@@ -95,7 +95,7 @@ const DashboardScreen = () => {
         <div className="bg-slate-800 p-6 rounded-xl shadow-xl">
           <div className="flex items-center gap-2 mb-2">
             <CheckCircle className="h-5 w-5 text-green-400" />
-            <h2 className="text-lg font-semibold">一次合格率（10 辆车）</h2>
+            <h2 className="text-lg font-semibold">一次合格率(10 辆车）</h2>
           </div>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={qualityData}>
