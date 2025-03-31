@@ -14,61 +14,61 @@ import {
 const chartData = {
   onlineDevices: Array.from({ length: 20 }, (_, i) => ({
     time: `T-${20 - i}`,
-    value: 6 + Math.random() * 4,
+    value: 20 + Math.floor(Math.random() * 6),
   })),
   alerts: Array.from({ length: 20 }, (_, i) => ({
     time: `T-${20 - i}`,
-    value: Math.floor(Math.random() * 10),
+    value: Math.floor(Math.random() * 5 + 2),
   })),
   cycle: Array.from({ length: 20 }, (_, i) => ({
     time: `T-${20 - i}`,
-    value: 480 + Math.random() * 40,
+    value: 60 + Math.random() * 15,
   })),
   successRate: Array.from({ length: 20 }, (_, i) => ({
     time: `T-${20 - i}`,
-    value: 98 + Math.random() * 2,
+    value: 97 + Math.random() * 3,
   })),
 };
 
 const stats = [
   {
     key: "onlineDevices",
-    title: "在线设备数",
+    title: "在线采集终端",
     icon: <Server className="h-5 w-5 text-green-600" />,
-    value: "8 / 10",
-    description: "当前活跃设备",
+    value: "24 / 26",
+    description: "总装产线上的边缘采集器运行状态",
   },
   {
     key: "alerts",
-    title: "今日告警数",
+    title: "今日报警次数",
     icon: <Bell className="h-5 w-5 text-red-600" />,
-    value: "5",
-    description: "过去24小时触发的告警",
+    value: "12",
+    description: "包含扭矩偏差、扫码失败等生产异常报警",
   },
   {
     key: "cycle",
-    title: "平均采集频率",
+    title: "平均节拍周期",
     icon: <Activity className="h-5 w-5 text-blue-600" />,
-    value: "500ms",
-    description: "当前系统平均采样周期",
+    value: "68s",
+    description: "总装产线单工位平均装配时间",
   },
   {
     key: "successRate",
     title: "数据上传成功率",
     icon: <TrendingUp className="h-5 w-5 text-indigo-600" />,
-    value: "99.8%",
-    description: "与服务器通信成功率",
+    value: "99.2%",
+    description: "MQTT 实时上报至中心服务器的成功率",
   },
 ];
 
 const Dashboard = () => {
-  const [selectedRange, setSelectedRange] = useState(14);
   const [selectedKey, setSelectedKey] = useState("onlineDevices");
+  const [selectedRange, setSelectedRange] = useState(14);
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-2">
-        <h2 className="text-2xl font-semibold tracking-tight">系统总览</h2>
+        <h2 className="text-2xl font-semibold tracking-tight">总装车间 - 系统总览</h2>
         <Button variant="outline">刷新数据</Button>
       </div>
 
@@ -119,7 +119,6 @@ const Dashboard = () => {
           {stats.find((s) => s.key === selectedKey)?.title} - 变化趋势图
         </h3>
         <ResponsiveContainer width="100%" height={300}>
-          {/* Chart dynamically sliced by selectedRange */}
           <LineChart data={chartData[selectedKey].slice(-selectedRange)}>
             <XAxis dataKey="time" tick={{ fontSize: 12 }} label={{ value: "时间", position: "insideBottomRight", offset: -5 }} />
             <YAxis
@@ -129,11 +128,9 @@ const Dashboard = () => {
               tickFormatter={(value) => {
                 switch (selectedKey) {
                   case "cycle":
-                    return value + "ms";
+                    return value + "s";
                   case "successRate":
                     return value.toFixed(1) + "%";
-                  case "alerts":
-                  case "onlineDevices":
                   default:
                     return value;
                 }
