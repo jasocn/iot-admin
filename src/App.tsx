@@ -18,6 +18,7 @@ import OTA from "./pages/OTA/OTA";
 import Logs from "./pages/Logs/Logs";
 import Users from "./pages/Users/Users";
 import Settings from "./pages/Settings/Settings";
+import DashboardScreen from "./pages/DashboardScreen/DashboardScreen";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
       <Routes>
         <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/screen" element={<DashboardScreen />} />
           <Route path="/devices" element={<Devices />} />
           <Route path="/realtime" element={<Realtime />} />
           <Route path="/history" element={<History />} />
