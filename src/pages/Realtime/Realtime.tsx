@@ -1,95 +1,88 @@
-import  { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Wifi, Car, Clock, TrendingUp } from "lucide-react";
 import {
   LineChart,
   Line,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const generateMockData = () => {
-  const now = new Date();
-  return {
-    time: now.toLocaleTimeString(),
-    temperature: (Math.random() * 20 + 60).toFixed(2),
-    pressure: (Math.random() * 2 + 0.5).toFixed(2),
-    voltage: (Math.random() * 10 + 210).toFixed(2),
-  };
-};
+const generateJPHData = () => Array.from({ length: 20 }, (_, i) => ({
+  time: `T-${20 - i}`,
+  value: 30 + Math.random() * 10,
+}));
+
+const generateRealtimeStats = () => [
+  {
+    title: "数据上传成功率",
+    icon: <Wifi className="h-5 w-5 text-cyan-600" />,
+    value: `${(98 + Math.random() * 2).toFixed(2)}%`,
+    desc: "当前 MQTT 实时上传成功率",
+  },
+  {
+    title: "实时车辆台数",
+    icon: <Car className="h-5 w-5 text-lime-600" />,
+    value: `${Math.floor(Math.random() * 4 + 1)} 台`,
+    desc: "产线中正在装配的车辆数",
+  },
+  {
+    title: "实时节拍",
+    icon: <Clock className="h-5 w-5 text-orange-600" />,
+    value: `${(60 + Math.random() * 10).toFixed(1)}s`,
+    desc: "当前工位节拍周期",
+  },
+  {
+    title: "实时 JPH",
+    icon: <TrendingUp className="h-5 w-5 text-violet-600" />,
+    value: `${(Math.random() * 20 + 30).toFixed(1)}`,
+    desc: "每小时产出预测（Jobs Per Hour）",
+  },
+];
 
 const Realtime = () => {
-  const [device, setDevice] = useState("iot2050-001");
-  const [data, setData] = useState<any[]>([]);
+  const [stats, setStats] = useState(generateRealtimeStats());
+  const [jphData, setJphData] = useState(generateJPHData());
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setData((prev) => {
-        const next = [...prev, generateMockData()];
-        return next.length > 20 ? next.slice(-20) : next;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
+    const timer = setInterval(() => {
+      setStats(generateRealtimeStats());
+      setJphData(generateJPHData());
+    }, 30000);
+    return () => clearInterval(timer);
   }, []);
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">实时监控</h2>
-        <Select onValueChange={setDevice} defaultValue={device}>
-          <SelectTrigger className="w-64">
-            <SelectValue placeholder="选择设备" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="iot2050-001">iot2050-001</SelectItem>
-            <SelectItem value="iot2050-002">iot2050-002</SelectItem>
-            <SelectItem value="iot2050-003">iot2050-003</SelectItem>
-          </SelectContent>
-        </Select>
+      <h2 className="text-2xl font-semibold tracking-tight">实时监控</h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((item, index) => (
+          <Card key={index} className="shadow">
+            <CardHeader className="flex items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">{item.title}</CardTitle>
+              {item.icon}
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{item.value}</div>
+              <p className="text-xs text-muted-foreground">{item.desc}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-4 rounded-xl shadow">
-          <h3 className="font-medium mb-2">温度 (℃)</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={data}>
-              <XAxis dataKey="time" />
-              <YAxis />
-              <CartesianGrid strokeDasharray="3 3" />
-              <Tooltip />
-              <Line type="monotone" dataKey="temperature" stroke="#8884d8" dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-white p-4 rounded-xl shadow">
-          <h3 className="font-medium mb-2">压力 (Bar)</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={data}>
-              <XAxis dataKey="time" />
-              <YAxis />
-              <CartesianGrid strokeDasharray="3 3" />
-              <Tooltip />
-              <Line type="monotone" dataKey="pressure" stroke="#82ca9d" dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-white p-4 rounded-xl shadow">
-          <h3 className="font-medium mb-2">电压 (V)</h3>
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={data}>
-              <XAxis dataKey="time" />
-              <YAxis />
-              <CartesianGrid strokeDasharray="3 3" />
-              <Tooltip />
-              <Line type="monotone" dataKey="voltage" stroke="#ffc658" dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+      <div className="bg-white dark:bg-slate-900 border rounded-xl shadow p-4">
+        <h3 className="text-lg font-semibold mb-4">JPH 实时趋势</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={jphData}>
+            <XAxis dataKey="time" stroke="#999" />
+            <YAxis stroke="#999" />
+            <Tooltip />
+            <Line type="monotone" dataKey="value" stroke="#6366f1" strokeWidth={2} dot={false} />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

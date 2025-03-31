@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Activity, Server, Bell, TrendingUp } from "lucide-react";
@@ -62,7 +62,7 @@ const stats = [
 ];
 
 const Dashboard = () => {
-  const [selectedKey, setSelectedKey] = useState<keyof typeof chartData>("onlineDevices");
+  const [selectedKey, setSelectedKey] = useState("onlineDevices");
   const [selectedRange, setSelectedRange] = useState(14);
 
   return (
