@@ -9,8 +9,8 @@ const generateChartData = () => Array.from({ length: 20 }, (_, i) => ({
 }));
 
 const generateQualityData = () => Array.from({ length: 10 }, (_, i) => ({
-  batch: `VIN-${1000 + i}`,
-  rate: 95 + Math.random() * 5,
+  batch: `LSVCCAZP3S2010${100 + i}`,
+  rate: 97 + Math.random() * 5,
 }));
 
 const stats = [
@@ -41,10 +41,15 @@ const stats = [
 ];
 
 const workshopData = [
-  { name: "焊装", count: 12 },
-  { name: "涂装", count: 8 },
-  { name: "总装", count: 26 },
-  { name: "检测", count: 5 },
+  { name: "BA0", count: 12 },
+  { name: "BA1", count: 8 },
+  { name: "BA2", count: 26 },
+  { name: "BA3", count: 5 },
+   { name: "BA4", count: 12 },
+  { name: "BA5", count: 8 },
+  { name: "BA6", count: 26 },
+  { name: "BA7", count: 15 },
+  { name: "OP", count: 5 },
 ];
 
 const DashboardScreen = () => {
@@ -62,7 +67,7 @@ const DashboardScreen = () => {
 
   return (
     <div className="min-h-screen bg-black text-white p-8 space-y-8">
-      <h1 className="text-3xl font-bold tracking-wide text-center">汽车工厂 · 总装数据看板</h1>
+      <h1 className="text-3xl font-bold tracking-wide text-center">生产数据看板</h1>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((item, i) => (
@@ -110,7 +115,7 @@ const DashboardScreen = () => {
         <div className="bg-slate-800 p-6 rounded-xl shadow-xl">
           <div className="flex items-center gap-2 mb-2">
             <MapPin className="h-5 w-5 text-yellow-400" />
-            <h2 className="text-lg font-semibold">车间设备分布</h2>
+            <h2 className="text-lg font-semibold">线体分布</h2>
           </div>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={workshopData} layout="vertical">
