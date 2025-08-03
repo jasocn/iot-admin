@@ -1,5 +1,6 @@
 import  { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import StatCard from "@/components/StatCard";
 import { Button } from "@/components/ui/button";
 import { Activity, Server, Bell, TrendingUp } from "lucide-react";
 import {
@@ -95,22 +96,17 @@ const Dashboard = () => {
 
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
         {stats.map((item) => (
-          <Card
+          <StatCard
             key={item.key}
+            title={item.title}
+            value={item.value}
+            icon={item.icon}
+            description={item.description}
+            onClick={() => setSelectedKey(item.key)}
             className={`shadow cursor-pointer transition-all border-2 ${
               selectedKey === item.key ? "border-blue-600" : "border-transparent"
             }`}
-            onClick={() => setSelectedKey(item.key)}
-          >
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{item.title}</CardTitle>
-              {item.icon}
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{item.value}</div>
-              <p className="text-xs text-muted-foreground">{item.description}</p>
-            </CardContent>
-          </Card>
+          />
         ))}
       </div>
 

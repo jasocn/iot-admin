@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 type User = {
   id: number;
@@ -23,7 +24,15 @@ const Users = () => {
   const [search, setSearch] = useState("");
 
   const toggleUserStatus = (id: number) => {
-    setUsers(users.map((u) => (u.id === id ? { ...u, enabled: !u.enabled } : u)));
+    setUsers(
+      users.map((u) => (u.id === id ? { ...u, enabled: !u.enabled } : u))
+    );
+    const toggledUser = users.find((u) => u.id === id);
+    if (toggledUser) {
+      toast.success(
+        `${toggledUser.username} 已${toggledUser.enabled ? "禁用" : "启用"}`
+      );
+    }
   };
 
   const filteredUsers = users.filter((u) => u.username.includes(search));
@@ -33,7 +42,7 @@ const Users = () => {
       <h2 className="text-2xl font-semibold">用户管理</h2>
 
       <div className="flex gap-4 items-center">
-        <Button onClick={() => alert("打开添加用户表单（模拟）")}>添加用户</Button>
+        <Button onClick={() => toast.info("打开添加用户表单（模拟）")}>添加用户</Button>
         <Input
           placeholder="搜索用户名"
           value={search}
@@ -66,7 +75,12 @@ const Users = () => {
               </TableCell>
               <TableCell>{u.createdAt}</TableCell>
               <TableCell className="space-x-2">
-                <Button size="sm" onClick={() => alert("编辑用户：" + u.username)}>编辑</Button>
+                <Button
+                  size="sm"
+                  onClick={() => toast.info(`编辑用户：${u.username}`)}
+                >
+                  编辑
+                </Button>
                 <Button
                   size="sm"
                   variant={u.enabled ? "destructive" : "secondary"}

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,9 +13,10 @@ const Login = () => {
   const handleLogin = () => {
     if (username === "admin" && password === "admin") {
       localStorage.setItem("auth", "true");
+      toast.success("登录成功，欢迎回来！");
       navigate("/");
     } else {
-      alert("用户名或密码错误");
+      toast.error("用户名或密码错误");
     }
   };
 

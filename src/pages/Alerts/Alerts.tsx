@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import LevelBadge from "@/components/LevelBadge";
+import { toast } from "sonner";
 
 type AlertItem = {
   id: number;
@@ -51,18 +53,7 @@ const Alerts = () => {
       a.id === id ? { ...a, status: "已确认" } : a
     );
     setAlerts(updated);
-    alert("已确认告警 ID: " + id);
-  };
-
-  const renderLevelBadge = (level: string) => {
-    switch (level) {
-      case "Critical":
-        return <Badge className="bg-red-600">🟥 严重</Badge>;
-      case "Warning":
-        return <Badge className="bg-yellow-500 text-black">🟧 警告</Badge>;
-      default:
-        return <Badge className="bg-blue-500">🟦 提示</Badge>;
-    }
+    toast.success(`已确认告警 ID: ${id}`);
   };
 
   return (
@@ -88,7 +79,9 @@ const Alerts = () => {
               <TableCell>{a.device}</TableCell>
               <TableCell>{a.variable}</TableCell>
               <TableCell>{a.value}</TableCell>
-              <TableCell>{renderLevelBadge(a.level)}</TableCell>
+              <TableCell>
+                <LevelBadge level={a.level} />
+              </TableCell>
               <TableCell>
                 <Badge variant={a.status === "已确认" ? "default" : "destructive"}>
                   {a.status}

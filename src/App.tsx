@@ -19,12 +19,21 @@ import Logs from "./pages/Logs/Logs";
 import Users from "./pages/Users/Users";
 import Settings from "./pages/Settings/Settings";
 import DashboardScreen from "./pages/DashboardScreen/DashboardScreen";
+import { Toaster } from "@/components/ui/sonner";
 
 function App() {
   return (
     <Router>
+      {/* 全局通知容器，确保 toast 能正常渲染 */}
+      <Toaster position="top-center" richColors />
       <Routes>
-        <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
+        <Route
+          element={
+            <ProtectedRoute>
+              <MainLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/" element={<Dashboard />} />
           <Route path="/screen" element={<DashboardScreen />} />
           <Route path="/devices" element={<Devices />} />
@@ -38,7 +47,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
         </Route>
         <Route path="/login" element={<Login />} />
-</Routes>
+      </Routes>
     </Router>
   );
 }

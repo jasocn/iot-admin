@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Clock, Wifi, Car, TrendingUp } from "lucide-react";
@@ -14,7 +14,9 @@ const generateHistoryData = () => {
 };
 
 const History = () => {
-  const [data, setData] = useState(generateHistoryData());
+  // 使用 useMemo 缓存初始数据，避免组件每次渲染都重新生成
+  const initialData = useMemo(() => generateHistoryData(), []);
+  const [data, setData] = useState(initialData);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -60,7 +62,7 @@ const History = () => {
               </TableHeader>
               <TableBody>
                 {data.map((row, idx) => (
-                  <TableRow key={idx}>
+                  <TableRow key={`${row.timestamp}-${idx}`}>
                     <TableCell>{row.timestamp}</TableCell>
                     <TableCell>{row.uploadSuccessRate}</TableCell>
                     <TableCell>{row.vehiclesInLine}</TableCell>

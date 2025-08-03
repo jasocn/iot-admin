@@ -70,8 +70,8 @@ const DashboardScreen = () => {
       <h1 className="text-3xl font-bold tracking-wide text-center">生产数据看板</h1>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((item, i) => (
-          <Card key={i} className="bg-slate-800 border-none shadow-xl">
+        {stats.map((item) => (
+          <Card key={item.title} className="bg-slate-800 border-none shadow-xl">
             <CardHeader className="flex flex-row justify-between items-center pb-1">
               <CardTitle className="text-sm text-gray-300">{item.title}</CardTitle>
               {item.icon}

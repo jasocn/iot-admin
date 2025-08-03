@@ -2,9 +2,20 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
 
 type Variable = {
+  /**
+   * 唯一标识，确保列表渲染时不会使用索引作为 key。
+   */
+  id: number;
   name: string;
   address: string;
   type: string;
@@ -15,23 +26,38 @@ const Config = () => {
   const [plcIp, setPlcIp] = useState("192.168.1.100");
   const [plcPort, setPlcPort] = useState("102");
   const [cycleMs, setCycleMs] = useState("1000");
-  const [variables, setVariables] = useState<Variable[]>([
-    { name: "Temperature", address: "DB1.DBW0", type: "INT" },
-    { name: "Pressure", address: "DB1.DBW2", type: "INT" },
-  ]);
+  const [variables, setVariables] = useState<Variable[]>([{
+    id: 1,
+    name: "Temperature",
+    address: "DB1.DBW0",
+    type: "INT",
+  }, {
+    id: 2,
+    name: "Pressure",
+    address: "DB1.DBW2",
+    type: "INT",
+  }]);
 
   const handleAddVariable = () => {
-    setVariables([...variables, { name: "", address: "", type: "INT" }]);
+    // 计算下一个 ID，保证每个变量具有唯一标识
+    const nextId = variables.length
+      ? Math.max(...variables.map((v) => v.id)) + 1
+      : 1;
+    setVariables([...variables, { id: nextId, name: "", address: "", type: "INT" }]);
   };
 
-  const handleRemoveVariable = (index: number) => {
-    setVariables(variables.filter((_, i) => i !== index));
+  const handleRemoveVariable = (id: number) => {
+    setVariables(variables.filter((v) => v.id !== id));
   };
 
-  const handleVariableChange = (index: number, field: keyof Variable, value: string) => {
-    const newVars = [...variables];
-    newVars[index][field] = value;
-    setVariables(newVars);
+  const handleVariableChange = (
+    id: number,
+    field: keyof Omit<Variable, "id">,
+    value: string
+  ) => {
+    setVariables(
+      variables.map((v) => (v.id === id ? { ...v, [field]: value } : v))
+    );
   };
 
   const handleSubmit = () => {
@@ -43,7 +69,7 @@ const Config = () => {
       variables,
     };
     console.log("📤 配置下发内容：", config);
-    alert("配置已准备下发（模拟）\n请查看控制台输出");
+    toast.success("配置已准备下发（模拟），请查看控制台输出");
   };
 
   return (
@@ -80,21 +106,21 @@ const Config = () => {
 
       <div>
         <h3 className="text-lg font-medium mb-2">变量列表</h3>
-        {variables.map((v, i) => (
-          <div key={i} className="grid grid-cols-4 gap-4 items-center mb-2">
+        {variables.map((v) => (
+          <div key={v.id} className="grid grid-cols-4 gap-4 items-center mb-2">
             <Input
               placeholder="变量名称"
               value={v.name}
-              onChange={(e) => handleVariableChange(i, "name", e.target.value)}
+              onChange={(e) => handleVariableChange(v.id, "name", e.target.value)}
             />
             <Input
               placeholder="PLC 地址（如 DB1.DBW0）"
               value={v.address}
-              onChange={(e) => handleVariableChange(i, "address", e.target.value)}
+              onChange={(e) => handleVariableChange(v.id, "address", e.target.value)}
             />
             <Select
               defaultValue={v.type}
-              onValueChange={(value) => handleVariableChange(i, "type", value)}
+              onValueChange={(value) => handleVariableChange(v.id, "type", value)}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -105,7 +131,9 @@ const Config = () => {
                 <SelectItem value="BOOL">BOOL</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="destructive" onClick={() => handleRemoveVariable(i)}>删除</Button>
+            <Button variant="destructive" onClick={() => handleRemoveVariable(v.id)}>
+              删除
+            </Button>
           </div>
         ))}
         <Button onClick={handleAddVariable}>+ 添加变量</Button>

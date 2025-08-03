@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// 移除未使用的 Card 相关组件，改用抽象后的 StatCard
+import StatCard from "@/components/StatCard";
 import { Wifi, Car, Clock, TrendingUp } from "lucide-react";
 import {
   LineChart,
@@ -74,17 +75,15 @@ const Realtime = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((item, index) => (
-          <Card key={index} className="shadow">
-            <CardHeader className="flex items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">{item.title}</CardTitle>
-              {item.icon}
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{item.value}</div>
-              <p className="text-xs text-muted-foreground">{item.desc}</p>
-            </CardContent>
-          </Card>
+        {stats.map((item) => (
+          <StatCard
+            key={item.title}
+            title={item.title}
+            value={item.value}
+            icon={item.icon}
+            description={item.desc}
+            className="shadow"
+          />
         ))}
       </div>
 

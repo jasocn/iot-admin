@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { toast } from "sonner";
 
 const mockDevices = [
   {
@@ -54,8 +55,9 @@ const Devices = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {mockDevices.map((device) => (
-            <TableRow key={device.id}>
+          {mockDevices.map((device, index) => (
+            // 使用复合键避免重复 ID 引起 React 警告
+            <TableRow key={`${device.id}-${index}`}>
               <TableCell>{device.id}</TableCell>
               <TableCell>{device.name}</TableCell>
               <TableCell>{device.ip}</TableCell>
@@ -66,9 +68,27 @@ const Devices = () => {
               </TableCell>
               <TableCell>{device.lastSeen}</TableCell>
               <TableCell className="space-x-2">
-                <Button size="sm" variant="outline" onClick={() => alert(`配置 ${device.id}`)}>配置</Button>
-                <Button size="sm" variant="outline" onClick={() => alert(`日志 ${device.id}`)}>日志</Button>
-                <Button size="sm" variant="secondary" onClick={() => alert(`重启 ${device.id}`)}>重启</Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => toast.info(`配置 ${device.id}`)}
+                >
+                  配置
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => toast.info(`日志 ${device.id}`)}
+                >
+                  日志
+                </Button>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => toast.info(`重启 ${device.id}`)}
+                >
+                  重启
+                </Button>
               </TableCell>
             </TableRow>
           ))}
