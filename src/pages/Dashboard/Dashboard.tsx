@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { getStatsOverview } from "@/services/api";
 
@@ -13,22 +14,24 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const chartData = {
+type ChartKey = 'onlineDevices' | 'alerts' | 'cycle' | 'successRate';
+
+const chartData: Record<ChartKey, { time: string; value: number }[]> = {
   onlineDevices: Array.from({ length: 20 }, (_, i) => ({
     time: `T-${20 - i}`,
-    value: 20  Math.floor(Math.random() * 6),
+    value: Math.floor(Math.random() * 6),
   })),
   alerts: Array.from({ length: 20 }, (_, i) => ({
     time: `T-${20 - i}`,
-    value: Math.floor(Math.random() * 5  2),
+    value: Math.floor(Math.random() * 5 + 2),
   })),
   cycle: Array.from({ length: 20 }, (_, i) => ({
     time: `T-${20 - i}`,
-    value: 60  Math.random() * 15,
+    value: 60 + Math.random() * 15,
   })),
   successRate: Array.from({ length: 20 }, (_, i) => ({
     time: `T-${20 - i}`,
-    value: 97  Math.random() * 3,
+    value: 97 + Math.random() * 3,
   })),
 };
 
@@ -60,10 +63,17 @@ const statDefinitions = [
     description: "MQTT 实时上报至中心服务器的成功率",
   },
 ];
+type Stats = {
+  onlineDevices?: number;
+  alertsToday?: number;
+  avgCycle?: number;
+  successRate?: number;
+  [key: string]: any;
+};
 
 const Dashboard = () => {
-  const [stats, setStats] = useState<any>({});
-  const [selectedKey, setSelectedKey] = useState<string>('onlineDevices');
+  const [stats, setStats] = useState<Stats>({});
+  const [selectedKey, setSelectedKey] = useState<ChartKey>('onlineDevices');
   const [selectedRange, setSelectedRange] = useState(14);
   const token = localStorage.getItem('token') || '';
 
@@ -109,10 +119,10 @@ const Dashboard = () => {
           <StatCard
             key={item.key}
             title={item.title}
-            value={item.value}
+            value={stats[item.key]}
             icon={item.icon}
             description={item.description}
-            onClick={() => setSelectedKey(item.key)}
+            onClick={() => setSelectedKey(item.key as ChartKey)}
             className={`shadow cursor-pointer transition-all border-2 ${
               selectedKey === item.key ? "border-blue-600" : "border-transparent"
             }`}
@@ -134,9 +144,9 @@ const Dashboard = () => {
               tickFormatter={(value) => {
                 switch (selectedKey) {
                   case "cycle":
-                    return value  "s";
+                    return value + " 秒";
                   case "successRate":
-                    return value.toFixed(1)  "%";
+                    return value.toFixed(1) + "%";
                   default:
                     return value;
                 }

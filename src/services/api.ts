@@ -1,6 +1,6 @@
 // 统一封装与后端接口交互的函数，便于在应用中复用
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:61801';
 
 // 登陆，返回包含 token 的响应
 export async function login(username: string, password: string) {
@@ -74,7 +74,7 @@ export async function getDataPoints(token: string, deviceId: string, rangeHours 
 
 // 获取仪表盘概览统计
 export async function getStatsOverview(token: string) {
-      const res = await fetch(`${API_BASE_URL}/api/stats/overview`, {
+      const res = await fetch(`${API_BASE_URL}/api/Stats/overview`, {
             headers: { Authorization: `Bearer ${token}` }
       });
       return res.json();
