@@ -1,48 +1,55 @@
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import { getDevices, restartDevice } from "@/services/api";
 
-const mockDevices = [
-  {
-    id: "iot2050-001",
-    name: "前电机加液",
-    ip: "192.168.1.10",
-    status: "online",
-    lastSeen: "2025-03-30 10:32",
-  },
-  {
-    id: "iot2050-002",
-    name: "轮胎机",
-    ip: "192.168.1.11",
-    status: "offline",
-    lastSeen: "2025-03-30 09:48",
-  },
-  {
-    id: "iot2050-003",
-    name: "HOP线",
-    ip: "192.168.1.12",
-    status: "online",
-    lastSeen: "2025-03-30 10:30",
-  },
-  {
-    id: "iot2050-003",
-    name: "底盘合装线",
-    ip: "192.168.1.12",
-    status: "online",
-    lastSeen: "2025-03-30 10:30",
-  },
-];
+// 声明设备类型，便于类型检查
+type Device = {
+  id: string;
+  name: string;
+  ip: string;
+  status: string;
+  lastSeen: string;
+};
 
 const Devices = () => {
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">设备管理</h2>
-        <Input className="w-64" placeholder="搜索设备 ID..." />
-      </div>
+  const [devices, setDevices] = useState<Device[]>([]);
+  const token = localStorage.getItem('token') || '';
 
+  useEffect(() => {
+    // 从后端加载设备列表
+    getDevices(token).then((data) => {
+      // 服务器返回的时间戳为 UTC，需要转换为本地时间字符串
+      const list = data.map((d: any) => ({
+        id: d.id,
+        name: d.name,
+        ip: d.ip,
+        status: d.status,
+        lastSeen: new Date(d.lastSeen).toLocaleString(),
+      }));
+      setDevices(list);
+    });
+  }, [token]);
+
+  const handleRestart = async (id: string) => {
+    await restartDevice(id, token);
+    // 重新刷新列表
+    const data = await getDevices(token);
+    const list = data.map((d: any) => ({
+      id: d.id,
+      name: d.name,
+      ip: d.ip,
+      status: d.status,
+      lastSeen: new Date(d.lastSeen).toLocaleString(),
+    }));
+    setDevices(list);
+  };
+
+  return (
+    // 此处保留原有的布局和表格结构，但将数据源替换为 devices
+    <>
+      {/* 设备管理页面内容 */}
+      <h2 className="text-2xl font-bold mb-4">设备管理</h2>
       <Table>
         <TableHeader>
           <TableRow>
@@ -55,37 +62,18 @@ const Devices = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {mockDevices.map((device, index) => (
-            // 使用复合键避免重复 ID 引起 React 警告
-            <TableRow key={`${device.id}-${index}`}>
+          {devices.map((device) => (
+            <TableRow key={device.id}>
               <TableCell>{device.id}</TableCell>
               <TableCell>{device.name}</TableCell>
               <TableCell>{device.ip}</TableCell>
-              <TableCell>
-                <Badge variant={device.status === "online" ? "default" : "destructive"}>
-                  {device.status === "online" ? "在线" : "离线"}
-                </Badge>
-              </TableCell>
+              <TableCell>{device.status === 'online' ? '在线' : '离线'}</TableCell>
               <TableCell>{device.lastSeen}</TableCell>
-              <TableCell className="space-x-2">
+              <TableCell>
                 <Button
-                  size="sm"
                   variant="outline"
-                  onClick={() => toast.info(`配置 ${device.id}`)}
-                >
-                  配置
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => toast.info(`日志 ${device.id}`)}
-                >
-                  日志
-                </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => toast.info(`重启 ${device.id}`)}
+                  className="mr-2"
+                  onClick={() => handleRestart(device.id)}
                 >
                   重启
                 </Button>
@@ -94,7 +82,7 @@ const Devices = () => {
           ))}
         </TableBody>
       </Table>
-    </div>
+    </>
   );
 };
 

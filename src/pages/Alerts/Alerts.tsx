@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import LevelBadge from "@/components/LevelBadge";
-import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import { getAlerts, confirmAlert } from "@/services/api";
 
 type AlertItem = {
   id: number;
@@ -15,51 +14,34 @@ type AlertItem = {
   status: "未确认" | "已确认";
 };
 
-const initialAlerts: AlertItem[] = [
-  {
-    id: 1,
-    time: "2025-03-30 10:32",
-    device: "iot2050-001",
-    variable: "温度",
-    value: "98.2 ℃",
-    level: "Critical",
-    status: "未确认",
-  },
-  {
-    id: 2,
-    time: "2025-03-30 10:28",
-    device: "iot2050-002",
-    variable: "压力",
-    value: "0.3 Bar",
-    level: "Warning",
-    status: "未确认",
-  },
-  {
-    id: 3,
-    time: "2025-03-30 10:10",
-    device: "iot2050-003",
-    variable: "电压",
-    value: "198 V",
-    level: "Info",
-    status: "已确认",
-  },
-];
-
 const Alerts = () => {
-  const [alerts, setAlerts] = useState(initialAlerts);
+  const [alerts, setAlerts] = useState<AlertItem[]>([]);
+  const token = localStorage.getItem('token') || '';
 
-  const handleConfirm = (id: number) => {
-    const updated = alerts.map((a): AlertItem =>
-      a.id === id ? { ...a, status: "已确认" } : a
-    );
-    setAlerts(updated);
-    toast.success(`已确认告警 ID: ${id}`);
+  useEffect(() => {
+    getAlerts(token).then((data) => {
+      const list = data.map((a: any) => ({
+        id: a.id,
+        time: new Date(a.time).toLocaleString(),
+        device: a.deviceId,
+        variable: a.variable,
+        value: a.value,
+        level: a.level as AlertItem['level'],
+        status: a.status as AlertItem['status'],
+      }));
+      setAlerts(list);
+    });
+  }, [token]);
+
+  const handleConfirm = async (id: number) => {
+    await confirmAlert(id, token);
+    // 更新本地状态
+    setAlerts((prev) => prev.map((a) => (a.id === id ? { ...a, status: '已确认' } : a)));
   };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-semibold">告警日志</h2>
-
+    <>
+      <h2 className="text-2xl font-bold mb-4">告警日志</h2>
       <Table>
         <TableHeader>
           <TableRow>
@@ -82,14 +64,10 @@ const Alerts = () => {
               <TableCell>
                 <LevelBadge level={a.level} />
               </TableCell>
+              <TableCell>{a.status}</TableCell>
               <TableCell>
-                <Badge variant={a.status === "已确认" ? "default" : "destructive"}>
-                  {a.status}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                {a.status === "未确认" && (
-                  <Button size="sm" onClick={() => handleConfirm(a.id)}>
+                {a.status === '未确认' && (
+                  <Button variant="outline" onClick={() => handleConfirm(a.id)}>
                     确认
                   </Button>
                 )}
@@ -98,7 +76,7 @@ const Alerts = () => {
           ))}
         </TableBody>
       </Table>
-    </div>
+    </>
   );
 };
 
