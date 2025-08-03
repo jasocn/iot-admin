@@ -1,6 +1,6 @@
 // 统一封装与后端接口交互的函数，便于在应用中复用
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:61801';
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'https://localhost:61801';
 
 // 登陆，返回包含 token 的响应
 export async function login(username: string, password: string) {
