@@ -1,5 +1,6 @@
-import  { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
+import { getStatsOverview } from "@/services/api";
+
 import StatCard from "@/components/StatCard";
 import { Button } from "@/components/ui/button";
 import { Activity, Server, Bell, TrendingUp } from "lucide-react";
@@ -15,56 +16,65 @@ import {
 const chartData = {
   onlineDevices: Array.from({ length: 20 }, (_, i) => ({
     time: `T-${20 - i}`,
-    value: 20 + Math.floor(Math.random() * 6),
+    value: 20  Math.floor(Math.random() * 6),
   })),
   alerts: Array.from({ length: 20 }, (_, i) => ({
     time: `T-${20 - i}`,
-    value: Math.floor(Math.random() * 5 + 2),
+    value: Math.floor(Math.random() * 5  2),
   })),
   cycle: Array.from({ length: 20 }, (_, i) => ({
     time: `T-${20 - i}`,
-    value: 60 + Math.random() * 15,
+    value: 60  Math.random() * 15,
   })),
   successRate: Array.from({ length: 20 }, (_, i) => ({
     time: `T-${20 - i}`,
-    value: 97 + Math.random() * 3,
+    value: 97  Math.random() * 3,
   })),
 };
 
-const stats = [
+
+// 仪表盘卡片配置，由接口返回的数据填充
+const statDefinitions = [
   {
     key: "onlineDevices",
     title: "在线采集终端",
-    icon: <Server className="h-5 w-5 text-green-600" />,
-    value: "24 / 26",
+    icon: <Server className="w-8 h-8" />,
     description: "总装产线上的边缘采集器运行状态",
   },
   {
-    key: "alerts",
+    key: "alertsToday",
     title: "今日报警次数",
-    icon: <Bell className="h-5 w-5 text-red-600" />,
-    value: "12",
+    icon: <Bell className="w-8 h-8" />,
     description: "包含扭矩偏差、扫码失败等生产异常报警",
   },
   {
-    key: "cycle",
+    key: "avgCycle",
     title: "平均节拍周期",
-    icon: <Activity className="h-5 w-5 text-blue-600" />,
-    value: "68s",
+    icon: <Activity className="w-8 h-8" />,
     description: "总装产线单工位平均装配时间",
   },
   {
     key: "successRate",
     title: "数据上传成功率",
-    icon: <TrendingUp className="h-5 w-5 text-indigo-600" />,
-    value: "99.2%",
+    icon: <TrendingUp className="w-8 h-8" />,
     description: "MQTT 实时上报至中心服务器的成功率",
   },
 ];
 
 const Dashboard = () => {
-  const [selectedKey, setSelectedKey] = useState<keyof typeof chartData>("onlineDevices");
+  const [stats, setStats] = useState<any>({});
+  const [selectedKey, setSelectedKey] = useState<string>('onlineDevices');
   const [selectedRange, setSelectedRange] = useState(14);
+  const token = localStorage.getItem('token') || '';
+
+  useEffect(() => {
+    // 加载仪表盘统计信息
+    getStatsOverview(token).then((data) => {
+      setStats(data);
+    });
+  }, [token]);
+
+
 
   return (
     <div className="space-y-6">
@@ -95,7 +105,7 @@ const Dashboard = () => {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
-        {stats.map((item) => (
+        {statDefinitions.map((item) => (
           <StatCard
             key={item.key}
             title={item.title}
@@ -112,7 +122,7 @@ const Dashboard = () => {
 
       <div className="rounded-xl border bg-white p-4 shadow dark:bg-slate-900">
         <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">
-          {stats.find((s) => s.key === selectedKey)?.title} - 变化趋势图
+           {statDefinitions.find((s) => s.key === selectedKey)?.title} - 变化趋势图
         </h3>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={chartData[selectedKey].slice(-selectedRange)}>
@@ -124,9 +134,9 @@ const Dashboard = () => {
               tickFormatter={(value) => {
                 switch (selectedKey) {
                   case "cycle":
-                    return value + "s";
+                    return value  "s";
                   case "successRate":
-                    return value.toFixed(1) + "%";
+                    return value.toFixed(1)  "%";
                   default:
                     return value;
                 }
